@@ -1,8 +1,9 @@
-import { ChangeDetectionStrategy, Component, EventEmitter, inject, input, Output, output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, EventEmitter, inject, Input, input, model, Output, output } from '@angular/core';
 import { FormsModule, ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Food } from '../../interfaces/food.interface';
 import { JsonPipe } from '@angular/common';
 import { FoodSupabaseSevice } from '../../services/food_supabase_sevice';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-add-food-modal',
@@ -207,13 +208,15 @@ import { FoodSupabaseSevice } from '../../services/food_supabase_sevice';
 })
 export class AddFoodModal {
   @Output() foodSaved = new EventEmitter<void>();
+
+  isEdit = false;
   
-  isOpen = input<boolean>(false);
+  isOpen = model<boolean>(false); 
   onClose = output<void>();
   onSubmit = output<Omit<Food, 'id'>>();
   foodService = inject(FoodSupabaseSevice);
 
-
+  @Input() foodEditar!: Food; // este nos permite recibir un platillo para editar
   // FormBuilder esta sirve para crear formularios reactivos de manera más sencilla, pero en este caso estamos usando ngModel para un formulario template-driven, así que no es estrictamente necesario. Sin embargo, lo dejo aquí por si queremos migrar a reactive forms en el futuro o para manejar validaciones más complejas.
   categories = [
     'Burgers', 'Pizzas', 'Tacos', 'Sandwiches',
@@ -268,6 +271,12 @@ export class AddFoodModal {
     url_img: '',
   };
 
+  openModal(food?:Food){
+    console.log(food);
+    this.isOpen.set(true);
+    
+  }
+
   close() {
     this.onClose.emit();
   }
@@ -310,9 +319,19 @@ export class AddFoodModal {
       return;
     }
     console.log('valor de formulario', this.formFood.value)
+    const foodName = this.formFood.value.name;
     const newFood = await this.foodService.postFood(this.formFood.value);
     this.foodSaved.emit();
     this.close();
     this.formFood.reset();
+    Swal.fire({
+      title: "Guardado!",
+      text: `El platillo ${foodName} ha sido guardado.`,
+      icon: "success",
+      confirmButtonColor: "#3085d6",
+      confirmButtonText: "OK",
+    });
   }
+
+    
 }

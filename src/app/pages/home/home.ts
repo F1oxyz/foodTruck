@@ -6,7 +6,7 @@ import { Food } from '../../interfaces/food.interface';
 
 @Component({
   selector: 'app-home',
-  imports: [CardFood, AddFoodModal],
+  imports: [CardFood],
   templateUrl: './home.html',
   styles: `
     :host {
@@ -18,7 +18,6 @@ import { Food } from '../../interfaces/food.interface';
 export class Home {
   foodService = inject(FoodSupabaseSevice);
   cdr = inject(ChangeDetectorRef); //para forzar la deteccion de cambios
-  showModal = signal(false);
   foods: Food[] = [];
 
   constructor() {
@@ -27,18 +26,10 @@ export class Home {
     this.getFood();
   }
 
-  openModal() {
-    this.showModal.set(true);
-  }
-
-  closeModal() {
-    this.showModal.set(false);
-  }
-
   handleSubmit(food: Omit<Food, 'id'>) {
     console.log('Nuevo platillo:', food);
     // TODO: llamar al servicio para guardar en Supabase
-    this.closeModal();
+    // this.closeModal();
   }
 
   async getFood() {

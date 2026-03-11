@@ -3,7 +3,6 @@ import { environment } from '../../environments/environment.development';
 import { SupabaseClient, createClient } from '@supabase/supabase-js';
 import { Food, FoodCreate } from '../interfaces/food.interface';
 
-
 @Injectable({
   providedIn: 'root'
 })
@@ -50,5 +49,7 @@ export class FoodSupabaseSevice {
     return data;
 
   }
+
+  
 
 }
