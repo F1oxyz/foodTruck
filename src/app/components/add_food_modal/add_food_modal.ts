@@ -33,7 +33,9 @@ import Swal from 'sweetalert2';
                 </svg>
               </div>
               <div>
-                <h2 class="text-lg font-black text-gray-900 tracking-tight leading-none">Nuevo Platillo</h2>
+                <h2 class="text-lg font-black text-gray-900 tracking-tight leading-none">
+                  {{isEdit ? 'Editar Platillo' : 'Nuevo Platillo'}}
+                </h2>
                 <p class="text-xs text-gray-400 mt-0.5">Completa los datos del item</p>
               </div>
             </div>
@@ -210,7 +212,8 @@ export class AddFoodModal {
   @Output() foodSaved = new EventEmitter<void>();
 
   isEdit = false;
-  
+  idFood = 0;
+
   isOpen = model<boolean>(false); 
   onClose = output<void>();
   onSubmit = output<Omit<Food, 'id'>>();
@@ -272,9 +275,16 @@ export class AddFoodModal {
   };
 
   openModal(food?:Food){
-    console.log(food);
+    console.log('comida: ', food);
     this.isOpen.set(true);
-    
+    this.isEdit = false;
+    this.formFood.reset();
+    if(food){
+      this.isEdit = true;
+      this.idFood = food.id;
+      this.formFood.reset(food)
+      return;
+    }
   }
 
   close() {
@@ -320,7 +330,16 @@ export class AddFoodModal {
     }
     console.log('valor de formulario', this.formFood.value)
     const foodName = this.formFood.value.name;
-    const newFood = await this.foodService.postFood(this.formFood.value);
+
+    if(this.isEdit){
+      const editFood = await this.foodService.updateFood(this.idFood, this.formFood.value)
+      console.log(editFood);
+    }else{
+      const newFood = await this.foodService.postFood(this.formFood.value)
+      console.log(newFood);
+      
+    }
+
     this.foodSaved.emit();
     this.close();
     this.formFood.reset();

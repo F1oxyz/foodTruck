@@ -50,6 +50,18 @@ export class FoodSupabaseSevice {
 
   }
 
-  
+  async updateFood(id_food: number, food: Food) {
+
+    const { data, error } = await this.supabase
+      .from('foods')
+      .update({...food})
+      .eq('id', id_food)
+      .select()
+    if (error) throw Error;
+    return data;
+
+  }
+
+
 
 }
