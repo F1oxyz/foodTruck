@@ -337,15 +337,15 @@ export class AddFoodModal {
     }else{
       const newFood = await this.foodService.postFood(this.formFood.value)
       console.log(newFood);
-      
+
     }
 
     this.foodSaved.emit();
     this.close();
     this.formFood.reset();
     Swal.fire({
-      title: "Guardado!",
-      text: `El platillo ${foodName} ha sido guardado.`,
+      title: `${this.isEdit ? 'Actualizado' : 'Guardado'}!`,
+      text: `El platillo ${foodName} ha sido ${this.isEdit ? 'actualizado' : 'guardado'}.`,
       icon: "success",
       confirmButtonColor: "#3085d6",
       confirmButtonText: "OK",

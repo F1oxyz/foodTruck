@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { environment } from '../../environments/environment.development';
 import { SupabaseClient, createClient } from '@supabase/supabase-js';
-import { Food, FoodCreate } from '../interfaces/food.interface';
+import { Food, FoodCreate, newItemCarrito } from '../interfaces/food.interface';
 
 @Injectable({
   providedIn: 'root'
@@ -23,7 +23,7 @@ export class FoodSupabaseSevice {
       .from('foods')
       .select('*');
 
-    if (error) throw Error;
+    if (error) throw error;
     return foods;
   }
 
@@ -33,7 +33,7 @@ export class FoodSupabaseSevice {
       .insert([food])
       .select();
 
-    if (error) throw Error;
+    if (error) throw error;
     return data;
 
   }
@@ -45,7 +45,7 @@ export class FoodSupabaseSevice {
       .delete()
       .eq('id', id_food)
 
-    if (error) throw Error;
+    if (error) throw error;
     return data;
 
   }
@@ -57,10 +57,72 @@ export class FoodSupabaseSevice {
       .update({...food})
       .eq('id', id_food)
       .select()
+    if (error) throw error;
+    return data;
+
+  }
+
+  async postCarrito(item: newItemCarrito) {
+    const { data, error } = await this.supabase
+      .from('items_carrito')
+      .insert([
+        item
+      ])
+      .select();
+
     if (error) throw Error;
     return data;
 
   }
+
+  async getItemCarrito(id: String) {
+    let {data, error} = await this.supabase
+      .from('items_carrito')
+      .select('*')
+      .eq('id_food', id)
+      ;
+    if (error) throw Error;
+    return data;
+  }
+
+  async getCarrito() {
+    const { data, error } = await this.supabase
+      .from('items_carrito')
+      .select('*, foods(*)');
+    if (error) {
+      console.error('Error fetching carrito:', error);
+      throw error;
+    }
+    return data;
+  }
+
+  async deleteItemCarrito(id_item: number) {
+
+    const { data, error } = await this.supabase
+      .from('items_carrito')
+      .delete()
+      .eq('id', id_item)
+    console.log(data);
+    if (error) throw error;
+    return data;
+
+  }
+
+  async vaciarCarrito(idArray: number[]) {
+    const { data, error } = await this.supabase
+      .from('items_carrito')
+      .delete()
+      .in('id', idArray)
+    console.log(data);
+    if (error) throw error;
+    return {
+      message: 'Carrito vaciado correctamente',
+      success: true
+    };
+  }
+    
+
+  
 
 
 

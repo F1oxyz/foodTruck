@@ -1,6 +1,8 @@
-import { ChangeDetectionStrategy, Component, Input, } from '@angular/core';
-import { Food } from '../../interfaces/food.interface';
+import { ChangeDetectionStrategy, Component, inject, Input, } from '@angular/core';
+import { Food, newItemCarrito } from '../../interfaces/food.interface';
 import { CurrencyPipe } from '@angular/common';
+import { FoodSupabaseSevice } from '../../services/food_supabase_sevice';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-card-food',
@@ -52,7 +54,8 @@ import { CurrencyPipe } from '@angular/common';
           <span class="text-xs text-gray-400 font-medium"># {{food.id}}</span>
           <button
             class="flex items-center gap-2 bg-gray-900 hover:bg-amber-500 text-white text-xs font-bold uppercase tracking-widest px-4 py-2.5 rounded-2xl transition-all duration-300 active:scale-95"
-          >
+            (click)="addToCarrito(food)"
+            >
             <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
               <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/>
               <line x1="3" y1="6" x2="21" y2="6"/>
@@ -73,7 +76,50 @@ import { CurrencyPipe } from '@angular/common';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CardFood {
-  
+
+  private supaService = inject(FoodSupabaseSevice);
   @Input() food!: Food;
-  
+
+  async addToCarrito(food: Food) {
+
+    const encontrado = await this.buscarItem(food.id.toString());
+
+    if (!encontrado) {
+      console.log('no está ese producto');
+
+      const item: newItemCarrito = {
+        id_food: food.id,
+        options: null,
+        quantity: 1,
+        total: food.price * 1,
+
+      }
+      const newItem = await this.supaService.postCarrito(item);
+      console.log('respuesta', newItem);
+
+      //alerta
+      Swal.fire({
+        title: '¡Producto agregado!',
+        text: 'El producto ha sido agregado al carrito.',
+        icon: 'success',
+        confirmButtonText: 'OK',
+        confirmButtonColor: '#4c8c55',
+      });
+
+    } else {
+      console.log('ya está ese producto');
+      //aqui se actualizaria
+    }
+
+
+  }
+
+  async buscarItem(id: String) {
+    const item = await this.supaService.getItemCarrito(id);
+    if (item) {
+      return item[0];
+    }
+    return null;
+  }
+
 }

@@ -18,3 +18,15 @@ export interface FoodCreate {
     category: string;
     available: boolean;
 }
+
+export interface newItemCarrito{
+    total: number;
+    id_food: number;
+    quantity: number;
+    options: string | null;
+}
+
+export interface ItemCarrito extends newItemCarrito {
+    id: number;
+    foods: Food;
+}
