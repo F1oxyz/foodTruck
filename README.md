@@ -45,7 +45,7 @@ Sigue estos pasos para levantar el entorno de desarrollo local:
 ### 2. Clonar e Instalar
 ```bash
 # Clona el repositorio (reemplaza con tu URL)
-git clone <tu-repositorio-url>
+git clone https://github.com/F1oxyz/foodTruck.git
 
 # Entra al directorio
 cd foodTruck
