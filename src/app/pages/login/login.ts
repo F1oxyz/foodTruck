@@ -1,3 +1,4 @@
+import { AuthService } from './../../services/auth_service';
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -15,6 +16,8 @@ import { Router } from '@angular/router';
 export class Login {
   private router = inject(Router); //para navegar
   private fb = inject(FormBuilder); //para construir el formulario
+
+  private AuthService = inject(AuthService);
 
   loginForm!: FormGroup; //para el form 
   showPassword = false; //para mostrar la contraseña
@@ -40,8 +43,11 @@ export class Login {
     this.showPassword = !this.showPassword;
   }
 
-  async onSubmit(){
-     
+  async onSubmit(){ //este sirve para iniciar sesion
+     const {email, password} = this.loginForm.value;
+     const user = await this.AuthService.signInWithEmail(email, password);
+     console.log('User: ', user);
+
   }
     
     

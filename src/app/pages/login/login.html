@@ -18,7 +18,7 @@
     </div>
 
     <!-- Login Form -->
-    <form class="flex flex-col gap-6">
+    <form  [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="flex flex-col gap-6">
       
       <!-- Input Group: Email -->
       <div class="flex flex-col gap-2">
@@ -35,7 +35,7 @@
           <input 
             type="email" 
             id="email" 
-            name="email"
+            formControlName="email"
             class="w-full pl-11 pr-4 py-3.5 bg-gray-50 border border-transparent focus:border-amber-500 focus:bg-white rounded-2xl text-gray-900 text-sm outline-none transition-all duration-300 placeholder:text-gray-400 focus:shadow-sm" 
             placeholder="tumail@ejemplo.com"
             required
@@ -62,7 +62,7 @@
           <input 
             type="password" 
             id="password" 
-            name="password"
+            formControlName="password"
             class="w-full pl-11 pr-4 py-3.5 bg-gray-50 border border-transparent focus:border-amber-500 focus:bg-white rounded-2xl text-gray-900 text-sm outline-none transition-all duration-300 placeholder:text-gray-400 focus:shadow-sm" 
             placeholder="••••••••"
             required
@@ -87,15 +87,6 @@
       </button>
 
     </form>
-
-    <!-- Footer Register -->
-    <!-- <div class="mt-8 text-center flex flex-col items-center">
-      <div class="w-full h-px bg-gray-100 mb-6"></div>
-      <p class="text-sm text-gray-500 font-medium">
-        ¿Te falta cuenta, pibe? 
-        <a href="#" class="text-amber-500 font-bold hover:text-amber-600 hover:underline transition-all">Registrate acá</a>
-      </p>
-    </div> -->
 
   </article>
 </section>
